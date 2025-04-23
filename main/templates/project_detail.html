@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm p-4 mb-4">
+    <h2>{{ project.title }}</h2>
+    <p><strong>Описание:</strong> {{ project.description }}</p>
+    <p><strong>Бюджет:</strong> {{ project.budget }} ₸</p>
+    <p><strong>Дедлайн:</strong> {{ project.deadline }}</p>
+
+    {% if project.executor %}
+        <p><strong>Исполнитель:</strong> {{ project.executor.username }}</p>
+    {% endif %}
+
+    {% if request.user == project.owner %}
+        <a class="btn btn-outline-primary" href="{% url 'edit_project' project.pk %}">Редактировать</a>
+        <a class="btn btn-outline-danger" href="{% url 'delete_project' project.pk %}">Удалить</a>
+    {% endif %}
+</div>
+
+{% if form %}
+    <div class="card p-4 mb-4">
+        <h4>Оставить отклик</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Отправить отклик</button>
+        </form>
+    </div>
+{% endif %}
+
+{% if offers %}
+    <div class="mt-5">
+        <h4>Отклики:</h4>
+        {% for offer in offers %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <p><strong>{{ offer.freelancer.username }}</strong> предложил: <b>{{ offer.proposed_price }} ₸</b></p>
+                    <p>{{ offer.proposal_text }}</p>
+                    <small class="text-muted">{{ offer.created_at }}</small>
+
+                    {% if request.user == project.owner and not project.executor %}
+                        <form method="post" action="{% url 'accept_offer' offer.pk %}">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-success mt-2">Принять</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if request.user == project.owner or request.user == project.executor %}
+    <a class="btn btn-outline-secondary mt-3" href="{% url 'project_chat' project.pk %}">💬 Перейти в чат</a>
+{% endif %}
+
+<hr>
+
+<h3>Комментарии</h3>
+{% for comment in comments %}
+    <div class="mb-2">
+        <strong>{{ comment.author.username }}</strong> — {{ comment.created_at|date:"d.m.Y H:i" }}<br>
+        {{ comment.text }}
+    </div>
+{% empty %}
+    <p>Комментариев пока нет.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Добавить комментарий</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+{% endif %}
+
+<a class="btn btn-link mt-3" href="{% url 'project_list' %}">← Назад</a>
+{% endblock %}
+
+

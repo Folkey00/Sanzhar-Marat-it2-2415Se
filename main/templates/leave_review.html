@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Оставить отзыв{% endblock %}
+
+{% block content %}
+<h2>Оставить отзыв для {{ reviewed_user.username }}</h2>
+<p>По проекту: {{ project.title }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Отправить</button>
+</form>
+{% endblock %}
+

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Создать проект{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">{% if project %}Редактировать{% else %}Создать{% endif %} проект</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Сохранить</button>
+    <a class="btn btn-secondary" href="{% url 'project_list' %}">Отмена</a>
+</form>
+{% endblock %}

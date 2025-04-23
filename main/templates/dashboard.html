@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Панель пользователя{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="card shadow p-5 rounded-4">
+        <h1 class="display-5 mb-4">Привет, {{ user.username }} 👋</h1>
+        <p class="lead mb-4">Что хочешь сделать?</p>
+        <a href="{% url 'create_project' %}" class="btn btn-success btn-lg me-3">➕ Добавить проект</a>
+        <a href="{% url 'project_list' %}" class="btn btn-outline-primary btn-lg">📂 Посмотреть проекты</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="card shadow p-5 rounded-4">
+        <h1 class="display-4 mb-4">Добро пожаловать на <span class="text-primary">фриланс платформу!</span></h1>
+        <p class="lead mb-4">Найдите клиентов или исполнителей прямо сейчас.</p>
+
+        {% if user.is_authenticated %}
+            <h4 class="mb-4">Привет, {{ user.username }} 👋</h4>
+            <a href="{% url 'create_project' %}" class="btn btn-success btn-lg me-3">➕ Добавить проект</a>
+            <a href="{% url 'project_list' %}" class="btn btn-outline-primary btn-lg">📂 Посмотреть проекты</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-success btn-lg me-3">Регистрация</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Вход</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

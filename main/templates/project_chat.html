@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Чат по проекту: {{ project.title }}{% endblock %}
+
+{% block content %}
+<h3>Чат с {{ project.executor if request.user == project.owner else project.owner }}</h3>
+
+<div class="border p-3 mb-3" style="height: 300px; overflow-y: auto; background: #f8f9fa;">
+    {% for msg in messages %}
+        <div class="mb-2 {% if msg.sender == request.user %}text-end{% endif %}">
+            <div class="p-2 rounded {% if msg.sender == request.user %}bg-primary text-white{% else %}bg-light{% endif %}">
+                <strong>{{ msg.sender.username }}</strong><br>
+                {{ msg.text }}
+                <div class="small text-muted">{{ msg.timestamp|date:"H:i d.m.Y" }}</div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">Сообщений пока нет.</p>
+    {% endfor %}
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary w-100">Отправить</button>
+</form>
+{% endblock %}
