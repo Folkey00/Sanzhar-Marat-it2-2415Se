@@ -18,28 +18,36 @@
     {% endif %}
 </div>
 
-{% if form %}
+{% if offer_form %}
     <div class="card p-4 mb-4">
         <h4>Оставить отклик</h4>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ offer_form.as_p }}
             <button type="submit" class="btn btn-primary">Отправить отклик</button>
         </form>
     </div>
 {% endif %}
 
 {% if offers %}
-    <div class="mt-5">
+    <div class="mt-4">
         <h4>Отклики:</h4>
         {% for offer in offers %}
             <div class="card mb-2">
                 <div class="card-body">
-                    <p><strong>{{ offer.freelancer.username }}</strong> предложил: <b>{{ offer.proposed_price }} ₸</b></p>
+                    <p>
+                        <strong>{{ offer.freelancer.username }}</strong>
+                        {% if offer.freelancer.is_client %}
+                            <span class="badge bg-info">Заказчик</span>
+                        {% elif offer.freelancer.is_freelancer %}
+                            <span class="badge bg-success">Фрилансер</span>
+                        {% endif %}
+                        предложил: <b>{{ offer.proposed_price }} ₸</b>
+                    </p>
                     <p>{{ offer.proposal_text }}</p>
-                    <small class="text-muted">{{ offer.created_at }}</small>
+                    <small class="text-muted">{{ offer.created_at|date:"d.m.Y H:i" }}</small>
 
-                    {% if request.user == project.owner and not project.executor %}
+                    {% if request.user == project.client and not project.executor %}
                         <form method="post" action="{% url 'accept_offer' offer.pk %}">
                             {% csrf_token %}
                             <button class="btn btn-sm btn-success mt-2">Принять</button>
@@ -49,9 +57,11 @@
             </div>
         {% endfor %}
     </div>
+{% else %}
+    <p>Пока нет откликов.</p>
 {% endif %}
 
-{% if request.user == project.owner or request.user == project.executor %}
+{% if can_chat %}
     <a class="btn btn-outline-secondary mt-3" href="{% url 'project_chat' project.pk %}">💬 Перейти в чат</a>
 {% endif %}
 
@@ -60,7 +70,13 @@
 <h3>Комментарии</h3>
 {% for comment in comments %}
     <div class="mb-2">
-        <strong>{{ comment.author.username }}</strong> — {{ comment.created_at|date:"d.m.Y H:i" }}<br>
+        <strong>{{ comment.author.username }}</strong>
+        {% if comment.author.is_client %}
+            <span class="badge bg-info">Заказчик</span>
+        {% elif comment.author.is_freelancer %}
+            <span class="badge bg-success">Фрилансер</span>
+        {% endif %}
+        — {{ comment.created_at|date:"d.m.Y H:i" }}<br>
         {{ comment.text }}
     </div>
 {% empty %}
@@ -80,4 +96,4 @@
 <a class="btn btn-link mt-3" href="{% url 'project_list' %}">← Назад</a>
 {% endblock %}
 
-
+<p>DEBUG: can_chat = {{ can_chat }}</p>

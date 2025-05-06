@@ -24,7 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),  # Подключаем маршруты из приложения main
     path('accounts/', include('django.contrib.auth.urls')),  # <-- вот эта строка важна!
-    path('', include('main.urls')), # в основном urls.py (например, freelance_platform/urls.py)
 ]
 
 if settings.DEBUG:

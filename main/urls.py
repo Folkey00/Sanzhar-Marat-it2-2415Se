@@ -4,10 +4,12 @@ from .views import (
     dashboard_view, profile_view, create_project,
     project_list, project_detail, edit_project,
     delete_project, accept_offer, leave_review,
+    my_offers_view, project_chat
 )
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView  # ✅ правильно
 
 urlpatterns = [
-    path('api/', include('main.urls_api')),
+    path('api/', include('main.urls_api')),  # Подключаем API-роутер
     path('', dashboard_view, name='dashboard'),
     path('about/', about_view, name='about'),
     path('register/', register_view, name='register'),
@@ -22,4 +24,9 @@ urlpatterns = [
     path('projects/<int:pk>/delete/', delete_project, name='delete_project'),
     path('offers/<int:pk>/accept/', accept_offer, name='accept_offer'),
     path('review/<int:user_id>/<int:project_id>/', leave_review, name='leave_review'),
+    path('my-offers/', my_offers_view, name='my_offers'),
+    path('projects/<int:pk>/chat/', project_chat, name='project_chat'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+

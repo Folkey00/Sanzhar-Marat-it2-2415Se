@@ -2,14 +2,14 @@
 
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views_api import ProjectViewSet, TokenLoginView
+from .views_api import ProjectViewSet, TokenLoginView, MyOffersAPIView
 
-# Создаем роутер и регистрируем ViewSet
+# Роутер для ViewSet
 router = DefaultRouter()
 router.register(r'projects', ProjectViewSet, basename='project')
 
-# Объединяем маршруты ViewSet и путь к TokenLoginView
 urlpatterns = router.urls + [
     path('api/token/', TokenLoginView.as_view(), name='token_login'),
+    path('my-offers/', MyOffersAPIView.as_view(), name='my_offers_api'),  # 👈 Добавляем путь
 ]
 

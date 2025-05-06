@@ -14,7 +14,8 @@
         {% endif %}
 
         <div>
-            <h3>Профиль: {{ user_profile.username }}</h3>
+           <h3>Профиль: {{ user_profile.username }}</h3>
+            <p><strong>Роль:</strong> {{ user_profile.get_role }}</p>
             <p>Email: {{ user_profile.email }}</p>
             <p>Имя: {{ user_profile.first_name|default:"(не указано)" }}</p>
             <p>Фамилия: {{ user_profile.last_name|default:"(не указано)" }}</p>
