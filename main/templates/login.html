@@ -2,8 +2,82 @@
 {% block title %}Вход / Регистрация{% endblock %}
 
 {% block content %}
+<style>
+    body {
+        background-color: #0d0d0d;
+        color: #f0f0f0;
+    }
+
+    .container {
+        background-color: #1a1a1a;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        border: 1px solid #333;
+    }
+
+    h2 {
+        color: #00e6e6;
+        text-shadow: 0 0 10px #00e6e6;
+    }
+
+    label {
+        color: #cccccc;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    input, select, textarea {
+        background-color: #2b2b2b;
+        color: #eaeaea;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 8px 12px;
+        width: 100%;
+        transition: box-shadow 0.3s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        box-shadow: 0 0 10px #00ffff, 0 0 5px #00ffff inset;
+        border-color: #00ffff;
+        background-color: #1f1f1f;
+    }
+
+    .btn-primary {
+        background-color: #00e6e6;
+        border: none;
+        color: #000;
+        font-weight: bold;
+        box-shadow: 0 0 10px #00e6e6, 0 0 40px #00e6e6 inset;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #00ffff;
+        box-shadow: 0 0 20px #00ffff, 0 0 60px #00ffff inset;
+    }
+
+    .alert-danger {
+        background-color: #330000;
+        color: #ff4d4d;
+        border: 1px solid #660000;
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+    }
+
+    .text-danger {
+        color: #ff4d4d !important;
+    }
+
+    .small {
+        font-size: 0.9rem;
+    }
+</style>
+
 <div class="container mt-5" style="max-width: 500px;">
-    <h2 class="mb-4 text-center">Вход / Регистрация</h2>
+    <h2 class="mb-4 text-center">🚪 Вход / Регистрация</h2>
 
     {% if form.errors %}
         <div class="alert alert-danger">
@@ -22,7 +96,7 @@
                 {% endif %}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary w-100">Отправить</button>
+        <button type="submit" class="btn btn-primary w-100">🚀 Отправить</button>
     </form>
 </div>
 {% endblock %}

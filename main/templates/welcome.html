@@ -1,14 +1,39 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Добро пожаловать{% endblock %}
+{% block title %}Добро пожаловать | FreeLance{% endblock %}
 
 {% block content %}
 <div class="container text-center mt-5">
-    <div class="card shadow p-5 rounded-4">
-        <h1 class="display-4 mb-4">Добро пожаловать на <span class="text-primary">фриланс платформу!</span></h1>
-        <p class="lead mb-4">Найдите клиентов или исполнителей прямо сейчас.</p>
-        <a href="{% url 'register' %}" class="btn btn-success btn-lg me-3">Регистрация</a>
-        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Вход</a>
+    <div class="card shadow-lg p-5 rounded-4 bg-white border-0 animate__animated animate__fadeIn">
+        <h1 class="display-4 mb-4 fw-bold">
+            🚀 Добро пожаловать на <span class="text-primary">FreeLance</span>!
+        </h1>
+        <p class="lead mb-4">
+            🧑‍💻 Платформа, где таланты и идеи встречаются!<br>
+            🌐 Работай удалённо. 💼 Нанимай быстро. 🔒 Безопасно и просто.
+        </p>
+        <div class="mb-4">
+            <img src="{% static 'img/freelance_intro.svg' %}" alt="Freelance" class="img-fluid" style="max-height: 300px;">
+        </div>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="{% url 'register' %}" class="btn btn-success btn-lg px-4 me-sm-3">
+                ✍️ Регистрация
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg px-4">
+                🔐 Вход
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h3 class="fw-bold">✨ Почему выбирают нас?</h3>
+        <ul class="list-group list-group-flush mt-3 text-start d-inline-block">
+            <li class="list-group-item">✅ Удобный поиск и фильтрация проектов</li>
+            <li class="list-group-item">🌍 Сообщество из разных стран</li>
+            <li class="list-group-item">💬 Общение напрямую с заказчиками и исполнителями</li>
+            <li class="list-group-item">🛡️ Система безопасных сделок и отзывов</li>
+        </ul>
     </div>
 </div>
 {% endblock %}

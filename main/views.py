@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .forms import RegisterForm, LoginForm, ProjectForm, OfferForm, ReviewForm, CommentForm
-from .models import Project, Offer, Review, User, Comment
+from django.contrib import messages
 from django.db.models import Avg, Q
-from django.contrib import messages as flash_messages
-from django.contrib import messages  # ← добавить это
-from .forms import MessageForm
+
+from .forms import (
+    RegisterForm, LoginForm, ProjectForm, OfferForm,
+    ReviewForm, CommentForm, MessageForm
+)
+from .models import Project, Offer, Review, User, Comment
 
 
 def register_view(request):
@@ -21,6 +23,21 @@ def register_view(request):
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
 
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Профиль успешно обновлен!")
+            return redirect('profile')
+    else:
+        form = RegisterForm(instance=request.user)
+
+    return render(request, 'edit_profile.html', {'form': form})
+
+
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
@@ -32,32 +49,31 @@ def login_view(request):
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
+
 def logout_view(request):
     logout(request)
     return redirect('login')
+
 
 def index(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
     return render(request, 'welcome.html')
 
+
 @login_required
 def dashboard_view(request):
     return render(request, 'dashboard.html')
 
+
 @login_required
 def profile_view(request, user_id=None):
-    if user_id:
-        user = get_object_or_404(User, pk=user_id)
-    else:
-        user = request.user
-
+    user = get_object_or_404(User, pk=user_id) if user_id else request.user
     reviews = Review.objects.filter(reviewed=user)
     average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
 
     has_shared_project = Project.objects.filter(
-        Q(client__in=[request.user, user]) &
-        Q(executor__in=[request.user, user])
+        Q(client__in=[request.user, user]) & Q(executor__in=[request.user, user])
     ).exists() if user != request.user else False
 
     return render(request, 'profile.html', {
@@ -66,6 +82,7 @@ def profile_view(request, user_id=None):
         'reviews': reviews,
         'can_review': has_shared_project,
     })
+
 
 @login_required
 def create_project(request):
@@ -83,6 +100,7 @@ def create_project(request):
         form = ProjectForm()
     return render(request, 'create_project.html', {'form': form})
 
+
 def project_list(request):
     search_query = request.GET.get('q')
     min_budget = request.GET.get('min_budget')
@@ -92,10 +110,8 @@ def project_list(request):
 
     if search_query:
         projects = projects.filter(title__icontains=search_query)
-
     if min_budget:
         projects = projects.filter(budget__gte=min_budget)
-
     if max_budget:
         projects = projects.filter(budget__lte=max_budget)
 
@@ -106,7 +122,6 @@ def project_list(request):
         'max_budget': max_budget
     })
 
-from django.contrib import messages  # Не забудь импорт
 
 def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -137,9 +152,7 @@ def project_detail(request, pk):
             offer_form = OfferForm()
 
     can_chat = project.executor and request.user in [project.client, project.executor]
-    print("DEBUG executor:", project.executor)
-    print("DEBUG user:", request.user)
-    print("DEBUG can_chat:", can_chat)
+
     return render(request, 'project_detail.html', {
         'project': project,
         'offers': offers,
@@ -147,9 +160,8 @@ def project_detail(request, pk):
         'offer_form': offer_form,
         'comment_form': comment_form,
         'can_chat': can_chat,
-
-        # 👈 передаём в шаблон
     })
+
 
 @login_required
 def edit_project(request, pk):
@@ -171,6 +183,7 @@ def edit_project(request, pk):
 
     return render(request, 'edit_project.html', {'form': form, 'project': project})
 
+
 @login_required
 def delete_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
@@ -184,6 +197,7 @@ def delete_project(request, pk):
 
     return render(request, 'delete_project.html', {'project': project})
 
+
 @login_required
 def accept_offer(request, pk):
     offer = get_object_or_404(Offer, pk=pk)
@@ -192,14 +206,12 @@ def accept_offer(request, pk):
     if request.user != project.client:
         return redirect('project_detail', pk=project.pk)
 
-    # Назначаем исполнителя
     project.executor = offer.freelancer
     project.save()
 
     messages.success(request, f"Вы назначили {offer.freelancer.username} исполнителем проекта!")
-
-    # 👉 Перенаправляем в чат
     return redirect('project_chat', pk=project.pk)
+
 
 @login_required
 def leave_review(request, user_id, project_id):
@@ -225,13 +237,16 @@ def leave_review(request, user_id, project_id):
         'project': project
     })
 
+
 def about_view(request):
     return render(request, 'about.html')
+
 
 @login_required
 def my_offers_view(request):
     offers = Offer.objects.filter(freelancer=request.user).select_related('project').order_by('-created_at')
     return render(request, 'my_offers.html', {'offers': offers})
+
 
 @login_required
 def project_chat(request, pk):
@@ -255,7 +270,9 @@ def project_chat(request, pk):
             msg = form.save(commit=False)
             msg.project = project
             msg.sender = request.user
-            msg.receiver = project.executor if request.user == project.client else project.client
+            msg.receiver = (
+                project.executor if request.user == project.client else project.client
+            )
             msg.save()
             messages.success(request, "Сообщение отправлено!")
             return redirect('project_chat', pk=pk)

@@ -2,22 +2,56 @@
 {% block title %}Мои отклики{% endblock %}
 
 {% block content %}
-<h2>Мои отклики</h2>
+<style>
+    body {
+        background-color: #0d0d0d;
+        color: #f1f1f1;
+    }
+    .card {
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        color: #f1f1f1;
+    }
+    .card-body {
+        background-color: #1e1e1e;
+        color: #eaeaea;
+    }
+    .btn-outline-secondary {
+        border-color: #aaa;
+        color: #aaa;
+    }
+    .btn-outline-secondary:hover {
+        background-color: #aaa;
+        color: #000;
+    }
+    a {
+        color: #66b3ff;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+        color: #fff;
+    }
+</style>
+
+<h2 class="mb-4 fw-bold">📨 Мои отклики</h2>
 
 {% if offers %}
     {% for offer in offers %}
-        <div class="card mb-3">
+        <div class="card mb-3 shadow-sm">
             <div class="card-body">
-                <h5><a href="{% url 'project_detail' offer.project.pk %}">{{ offer.project.title }}</a></h5>
-                <p>{{ offer.proposal_text }}</p>
-                <p><strong>Цена:</strong> {{ offer.proposed_price }} ₸</p>
-                <small class="text-muted">Отправлен: {{ offer.created_at|date:"d.m.Y H:i" }}</small>
+                <h5 class="fw-semibold mb-2">
+                    <a href="{% url 'project_detail' offer.project.pk %}">{{ offer.project.title }}</a>
+                </h5>
+                <p class="mb-1 text-muted">{{ offer.proposal_text }}</p>
+                <p><strong>💰 Цена:</strong> {{ offer.proposed_price }} ₸</p>
+                <small class="text-muted">📅 Отправлен: {{ offer.created_at|date:"d.m.Y H:i" }}</small>
             </div>
         </div>
     {% endfor %}
 {% else %}
-    <p>Вы ещё не оставляли откликов.</p>
+    <p class="text-muted">🔕 Вы ещё не оставляли откликов.</p>
 {% endif %}
 
-<a class="btn btn-secondary mt-3" href="{% url 'dashboard' %}">← Назад</a>
+<a class="btn btn-outline-secondary mt-4" href="{% url 'dashboard' %}">← Назад в личный кабинет</a>
 {% endblock %}

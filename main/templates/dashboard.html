@@ -1,15 +1,131 @@
 {% extends 'base.html' %}
-
 {% block title %}Панель пользователя{% endblock %}
 
 {% block content %}
-<div class="container text-center mt-5">
-    <div class="card shadow p-5 rounded-4">
-        <h1 class="display-5 mb-4">Привет, {{ user.username }} 👋</h1>
-        <p class="lead mb-4">Что хочешь сделать?</p>
-        <a href="{% url 'create_project' %}" class="btn btn-success btn-lg me-3">➕ Добавить проект</a>
-        <a href="{% url 'project_list' %}" class="btn btn-outline-primary btn-lg">📂 Посмотреть проекты</a>
-        <a class="btn btn-outline-info" href="{% url 'my_offers' %}">📄 Мои отклики</a>
+<style>
+  body, html {
+    background-color: #0a0a0a; /* Очень тёмный фон */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .dashboard-card {
+    position: relative;
+    background: #111111; /* Темнее, почти чёрный */
+    color: #c0c0c0;
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    max-width: 700px;
+    margin: 4rem auto;
+    box-shadow:
+      0 0 15px rgba(0, 255, 255, 0.12),
+      inset 0 0 40px rgba(0, 255, 255, 0.05);
+    overflow: hidden;
+  }
+
+  /* Лёгкая анимация свечения на фоне карточки */
+  .dashboard-card::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: -40%;
+    width: 180%;
+    height: 180%;
+    background: radial-gradient(circle at center, rgba(0, 255, 255, 0.15), transparent 70%);
+    filter: blur(40px);
+    animation: pulseGlow 6s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.6;
+    }
+  }
+
+  /* Чтобы контент был поверх свечения */
+  .dashboard-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    color: #00cccc;
+    text-shadow: 0 0 8px #00cccc;
+    margin-bottom: 1.5rem;
+  }
+
+  p.lead {
+    color: #a0a0a0;
+    margin-bottom: 2rem;
+    font-size: 1.25rem;
+  }
+
+  .btn-glow {
+    background-color: #00bbbb;
+    color: #000;
+    border: none;
+    padding: 14px 28px;
+    font-size: 1.1rem;
+    border-radius: 14px;
+    margin: 0.3rem 0.7rem;
+    box-shadow: 0 0 8px #00bbbb, 0 0 16px #00bbbb inset;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-glow:hover {
+    background-color: #009999;
+    box-shadow: 0 0 16px #00bbbb, 0 0 32px #00bbbb inset;
+    transform: scale(1.05);
+  }
+
+  .btn-outline-glow {
+    background: transparent;
+    color: #00cccc;
+    border: 2px solid #00cccc;
+    padding: 14px 28px;
+    font-size: 1.1rem;
+    border-radius: 14px;
+    margin: 0.3rem 0.7rem;
+    box-shadow: 0 0 6px #00cccc;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-outline-glow:hover {
+    background-color: #002f2f;
+    box-shadow: 0 0 12px #00cccc, 0 0 24px #00cccc inset;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 576px) {
+    .dashboard-card {
+      padding: 2rem 1rem;
+      margin: 2rem 1rem;
+    }
+    .btn-glow, .btn-outline-glow {
+      padding: 12px 20px;
+      font-size: 1rem;
+      margin: 0.25rem 0.5rem;
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="dashboard-card text-center">
+    <h1>Добро пожаловать, {{ user.username }}</h1>
+    <p class="lead">Выберите действие для продолжения работы</p>
+
+    <div class="d-flex justify-content-center flex-wrap">
+        <a href="{% url 'create_project' %}" class="btn btn-glow">Создать проект</a>
+        <a href="{% url 'project_list' %}" class="btn btn-outline-glow">Список проектов</a>
+        <a href="{% url 'my_offers' %}" class="btn btn-outline-glow">Мои отклики</a>
     </div>
 </div>
 {% endblock %}
+

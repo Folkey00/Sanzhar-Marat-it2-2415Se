@@ -1,35 +1,163 @@
 {% extends 'base.html' %}
-{% load static %}  {# <-- ВАЖНО: добавь эту строку для работы static #}
+{% load static %}
 
-{% block title %}О нас | HustleBee{% endblock %}
+{% block title %}О нас | FreeLance{% endblock %}
 
 {% block content %}
-<div class="bg-light p-5 rounded text-center mb-5 shadow">
-    <h1 class="display-4 fw-bold">Добро пожаловать на <span class="text-warning">HustleBee</span> 🐝</h1>
-    <p class="lead">Место, где талантливые фрилансеры и заказчики находят друг друга.</p>
-    <a href="{% url 'register' %}" class="btn btn-warning btn-lg mt-3 me-3">Присоединиться</a>
-    <a href="{% url 'create_project' %}" class="btn btn-outline-dark btn-lg mt-3">Разместить проект</a>
+<style>
+  body {
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+  }
+  .about-hero {
+    background: linear-gradient(135deg, #121212 0%, #1f1f1f 100%);
+    padding: 4rem 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0, 255, 210, 0.2);
+    margin-bottom: 3rem;
+  }
+  .about-hero h1 {
+    font-weight: 900;
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: #00ffd0;
+  }
+  .about-hero p.lead {
+    font-size: 1.25rem;
+    color: #a0a0a0;
+    margin-bottom: 0.5rem;
+  }
+  .btn-warning {
+    background-color: #00ffd0;
+    border: none;
+    color: #000;
+    font-weight: 700;
+    box-shadow: 0 0 10px #00ffd0;
+  }
+  .btn-warning:hover {
+    background-color: #00e0b5;
+  }
+  .btn-outline-dark {
+    color: #00ffd0;
+    border-color: #00ffd0;
+  }
+  .btn-outline-dark:hover {
+    background-color: #00ffd0;
+    color: #000;
+  }
+
+  .mission-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  .mission-img {
+    flex: 1 1 45%;
+    border-radius: 1rem;
+    box-shadow: 0 0 30px rgba(0, 255, 208, 0.3);
+  }
+  .mission-text {
+    flex: 1 1 50%;
+  }
+  .mission-text h2 {
+    font-weight: 800;
+    font-size: 2rem;
+    color: #00ffd0;
+    margin-bottom: 1rem;
+  }
+  .mission-text p {
+    font-size: 1.1rem;
+    color: #cfcfcf;
+  }
+  .list-group-item {
+    background: transparent;
+    border: none;
+    padding-left: 0;
+    font-size: 1rem;
+    color: #b0f2e4;
+  }
+  .list-group-item strong {
+    color: #00ffd0;
+  }
+
+  .call-to-action {
+    background: #111;
+    border-radius: 1rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(0, 255, 210, 0.3);
+  }
+  .call-to-action h3 {
+    font-weight: 800;
+    font-size: 2rem;
+    color: #00ffd0;
+    margin-bottom: 1rem;
+  }
+  .call-to-action p.lead {
+    font-size: 1.2rem;
+    color: #8deedc;
+    margin-bottom: 2rem;
+  }
+  .btn-success {
+    background-color: #00ffd0;
+    color: #000;
+    font-weight: 700;
+    box-shadow: 0 0 10px #00ffd0;
+    margin-right: 1rem;
+  }
+  .btn-success:hover {
+    background-color: #00e0b5;
+  }
+  .btn-primary {
+    background-color: #009f85;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 0 10px #009f85;
+  }
+  .btn-primary:hover {
+    background-color: #007f67;
+  }
+
+  @media (max-width: 768px) {
+    .mission-section {
+      flex-direction: column;
+    }
+    .mission-img, .mission-text {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+
+<div class="about-hero">
+  <h1>Добро пожаловать на <span>FreeLance</span> 🧑‍💻🚀</h1>
+  <p class="lead">Место, где талантливые фрилансеры и амбициозные заказчики находят друг друга 🤝.</p>
+  <p>Ты можешь не просто найти работу — ты можешь построить карьеру мечты!</p>
+  <a href="{% url 'register' %}" class="btn btn-warning btn-lg mt-3 me-3">✨ Присоединиться</a>
+  <a href="{% url 'create_project' %}" class="btn btn-outline-dark btn-lg mt-3">📢 Разместить проект</a>
 </div>
 
-<div class="row mb-5">
-    <div class="col-md-6">
-        <img src="{% static 'img/teamwork.png' %}" class="img-fluid rounded" alt="Freelance teamwork">
-    </div>
-    <div class="col-md-6">
-        <h2 class="fw-bold">🐝 Наша миссия</h2>
-        <p>Объединить талантливых специалистов с теми, кто ищет качественное выполнение задач. Мы верим, что гибкая удалённая работа — это будущее, и мы строим его уже сегодня.</p>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">🔧 Тысячи проектов в разных сферах</li>
-            <li class="list-group-item">💼 Гибкий график и свобода действий</li>
-            <li class="list-group-item">🛡️ Система рейтингов и безопасных сделок</li>
-            <li class="list-group-item">💬 Прямое общение без посредников</li>
-        </ul>
-    </div>
+<div class="mission-section">
+  <img src="{% static 'img/teamwork.png' %}" alt="Freelance teamwork" class="mission-img" />
+  <div class="mission-text">
+    <h2>🌟 Наша миссия</h2>
+    <p>Мы стремимся объединить лучших специалистов со всего мира с теми, кто ищет качественное выполнение задач. FreeLance — это:</p>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">🔧 <strong>Разнообразие проектов</strong> — от дизайна до программирования</li>
+      <li class="list-group-item">💼 <strong>Свобода</strong> — ты выбираешь, где, когда и с кем работать</li>
+      <li class="list-group-item">🛡️ <strong>Надёжность</strong> — система рейтингов и безопасных сделок</li>
+      <li class="list-group-item">💬 <strong>Прямое общение</strong> — без посредников и лишней бюрократии</li>
+      <li class="list-group-item">🌍 <strong>Глобальное сообщество</strong> — будь частью чего-то большего</li>
+    </ul>
+  </div>
 </div>
 
-<div class="text-center">
-    <h3 class="mb-3">Готовы начать?</h3>
-    <a href="{% url 'register' %}" class="btn btn-success btn-lg me-3">Стать фрилансером</a>
-    <a href="{% url 'create_project' %}" class="btn btn-primary btn-lg">Нанять исполнителя</a>
+<div class="call-to-action">
+  <h3>🚀 Готов(а) сделать первый шаг?</h3>
+  <p class="lead">Создай аккаунт или опубликуй проект прямо сейчас. Время — твой главный ресурс ⏳.</p>
+  <a href="{% url 'register' %}" class="btn btn-success btn-lg me-3">🧑‍🎓 Стать фрилансером</a>
+  <a href="{% url 'create_project' %}" class="btn btn-primary btn-lg">🧑‍💼 Нанять исполнителя</a>
 </div>
 {% endblock %}

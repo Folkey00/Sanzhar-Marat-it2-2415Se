@@ -2,7 +2,127 @@
 {% block title %}Создать проект{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">{% if project %}Редактировать{% else %}Создать{% endif %} проект</h2>
+<style>
+  /* Тёмный фон всей страницы */
+  body, html {
+    background-color: #0a0a0a;
+    color: #ccc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* Контейнер формы - центрирование и ширина */
+  form {
+    max-width: 600px;
+    margin: 2rem auto;
+    position: relative;
+    z-index: 2; /* чтобы текст был поверх анимации */
+    background: rgba(20, 20, 20, 0.85);
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    border: 1px solid #444;
+    box-shadow:
+      0 0 15px rgba(200, 200, 200, 0.1),
+      inset 0 0 20px rgba(150, 150, 150, 0.1);
+  }
+
+  /* Заголовок */
+  h2 {
+    color: #bbb;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+  }
+
+  /* Поля формы */
+  input, textarea, select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 1.5rem;
+    background-color: #1e1e1e;
+    border: 1px solid #555;
+    border-radius: 8px;
+    color: #ddd;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 500;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: #999;
+    box-shadow: 0 0 8px #999;
+    outline: none;
+    background-color: #2a2a2a;
+  }
+
+  /* Кнопки */
+  .btn-success {
+    background: linear-gradient(90deg, #4a4a4a, #6e6e6e);
+    border: none;
+    padding: 12px 28px;
+    color: #eee;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(200, 200, 200, 0.3);
+    transition: background 0.3s ease, box-shadow 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+  }
+  .btn-success:hover {
+    background: linear-gradient(90deg, #6e6e6e, #8f8f8f);
+    box-shadow: 0 0 14px rgba(220, 220, 220, 0.6);
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    color: #999;
+    border: 2px solid #666;
+    padding: 12px 28px;
+    border-radius: 8px;
+    margin-left: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .btn-secondary:hover {
+    background-color: #666;
+    color: #eee;
+  }
+
+  /* Твоя анимация с градиентными кругами, но с холодными цветами */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 10% 20%, rgba(180, 180, 180, 0.12), transparent 40%),
+      radial-gradient(circle at 80% 30%, rgba(130, 130, 130, 0.08), transparent 50%),
+      radial-gradient(circle at 50% 80%, rgba(150, 150, 150, 0.07), transparent 60%);
+    animation: moveBackground 20s linear infinite;
+    z-index: 1;
+    pointer-events: none;  /* Важно! */
+  }
+
+  @keyframes moveBackground {
+    0% {
+      background-position: 10% 20%, 80% 30%, 50% 80%;
+    }
+    50% {
+      background-position: 15% 25%, 75% 35%, 55% 85%;
+    }
+    100% {
+      background-position: 10% 20%, 80% 30%, 50% 80%;
+    }
+  }
+</style>
+
+<h2>{% if project %}Редактировать{% else %}Создать{% endif %} проект</h2>
 
 <form method="post">
     {% csrf_token %}
@@ -10,4 +130,5 @@
     <button type="submit" class="btn btn-success">Сохранить</button>
     <a class="btn btn-secondary" href="{% url 'project_list' %}">Отмена</a>
 </form>
+
 {% endblock %}

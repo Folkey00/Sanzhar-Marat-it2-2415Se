@@ -2,50 +2,227 @@
 {% block title %}Список проектов{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Все проекты</h1>
+<style>
+  /* Фон и шрифты — минимализм, чёрный фон, белый текст */
+  body, #page-content {
+    background-color: #000000;
+    color: #e0e0e0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
 
-<!-- 🔍 Форма поиска и фильтрации -->
-<form method="get" class="row g-3 mb-4">
-    <div class="col-md-4">
-        <input type="text" name="q" class="form-control" placeholder="Поиск по названию"
-               value="{{ search_query }}">
-    </div>
-    <div class="col-md-2">
-        <input type="number" step="0.01" name="min_budget" class="form-control"
-               placeholder="Мин. бюджет" value="{{ min_budget }}">
-    </div>
-    <div class="col-md-2">
-        <input type="number" step="0.01" name="max_budget" class="form-control"
-               placeholder="Макс. бюджет" value="{{ max_budget }}">
-    </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">Найти</button>
-    </div>
-    <div class="col-md-2">
-        <a href="{% url 'project_list' %}" class="btn btn-secondary w-100">Сброс</a>
-    </div>
-</form>
+  a {
+    color: #5ef3ff; /* холодный голубой */
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
 
-<!-- 🧾 Список проектов -->
-<div class="row">
-    {% for project in projects %}
-        <div class="col-md-6">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a>
-                    </h5>
-                    <p class="card-text">{{ project.description|truncatewords:20 }}</p>
-                    <p class="text-muted">Бюджет: {{ project.budget }} ₸</p>
-                    <p class="text-muted">Дедлайн: {{ project.deadline }}</p>
-                </div>
-            </div>
-        </div>
-    {% empty %}
-        <p>Пока нет проектов.</p>
-    {% endfor %}
+  /* Контейнер для шариков на фоне */
+  #pulse-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  @keyframes pulse-fade {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+      box-shadow: 0 0 10px 3px #5ef3ff;
+    }
+    70% {
+      transform: scale(1.5);
+      opacity: 0.6;
+      box-shadow: 0 0 20px 8px #a3ffff;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+      box-shadow: 0 0 30px 15px transparent;
+    }
+  }
+
+  .pulse-ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #5ef3ff;
+    box-shadow: 0 0 10px 3px #5ef3ff;
+    animation: pulse-fade 2s ease-out forwards;
+  }
+
+  /* Стиль контента поверх фона */
+  #page-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+  }
+
+  h1 {
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    letter-spacing: 1px;
+  }
+
+  /* Карточки проектов — минималистичные, тёмные с лёгкой подсветкой */
+  .card {
+    background-color: #121212;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(94, 243, 255, 0.3);
+    color: #cfcfcf;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .card:hover {
+    box-shadow: 0 8px 24px rgba(94, 243, 255, 0.7);
+    transform: translateY(-6px);
+  }
+
+  .card-title a {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: #5ef3ff;
+    transition: color 0.3s ease;
+  }
+  .card-title a:hover {
+    color: #a3ffff;
+  }
+
+  .card-text {
+    color: #b0b0b0;
+    margin-bottom: 0.75rem;
+  }
+
+  .text-muted {
+    color: #7f7f7f !important;
+  }
+
+  /* Кнопки — плоские, с голубой подсветкой и плавным hover */
+  .btn-primary {
+    background-color: transparent;
+    border: 2px solid #5ef3ff;
+    color: #5ef3ff;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .btn-primary:hover {
+    background-color: #5ef3ff;
+    color: #000000;
+  }
+
+  .btn-secondary {
+    background-color: transparent;
+    border: 2px solid #555555;
+    color: #888888;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .btn-secondary:hover {
+    background-color: #555555;
+    color: #e0e0e0;
+  }
+
+  input.form-control {
+    background-color: #121212;
+    border: 1px solid #444;
+    color: #d0d0d0;
+    font-weight: 500;
+    transition: border-color 0.3s ease;
+  }
+  input.form-control:focus {
+    border-color: #5ef3ff;
+    box-shadow: 0 0 8px #5ef3ff;
+    outline: none;
+    background-color: #1a1a1a;
+  }
+  input.form-control::placeholder {
+    color: #666666;
+  }
+</style>
+
+<div id="page-content">
+
+  <h1>Все проекты</h1>
+
+  <!-- 🔍 Форма поиска и фильтрации -->
+  <form method="get" class="row g-3 mb-4">
+      <div class="col-md-4">
+          <input type="text" name="q" class="form-control" placeholder="Поиск по названию"
+                 value="{{ search_query }}">
+      </div>
+      <div class="col-md-2">
+          <input type="number" step="0.01" name="min_budget" class="form-control"
+                 placeholder="Мин. бюджет" value="{{ min_budget }}">
+      </div>
+      <div class="col-md-2">
+          <input type="number" step="0.01" name="max_budget" class="form-control"
+                 placeholder="Макс. бюджет" value="{{ max_budget }}">
+      </div>
+      <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100">Найти</button>
+      </div>
+      <div class="col-md-2">
+          <a href="{% url 'project_list' %}" class="btn btn-secondary w-100">Сброс</a>
+      </div>
+  </form>
+
+  <!-- 🧾 Список проектов -->
+  <div class="row">
+      {% for project in projects %}
+          <div class="col-md-6">
+              <div class="card mb-4 shadow-sm">
+                  <div class="card-body">
+                      <h5 class="card-title">
+                          <a href="{% url 'project_detail' project.pk %}">{{ project.title }}</a>
+                      </h5>
+                      <p class="card-text">{{ project.description|truncatewords:20 }}</p>
+                      <p class="text-muted">Бюджет: {{ project.budget }} ₸</p>
+                      <p class="text-muted">Дедлайн: {{ project.deadline }}</p>
+                  </div>
+              </div>
+          </div>
+      {% empty %}
+          <p>Пока нет проектов.</p>
+      {% endfor %}
+  </div>
+
+  <a class="btn btn-primary" href="{% url 'create_project' %}">+ Новый проект</a>
+
 </div>
 
-<a class="btn btn-primary" href="{% url 'create_project' %}">+ Новый проект</a>
-{% endblock %}
+<!-- Контейнер для шариков -->
+<div id="pulse-container"></div>
 
+<script>
+  function createPulseBall() {
+    const container = document.getElementById('pulse-container');
+    const ball = document.createElement('div');
+    ball.classList.add('pulse-ball');
+
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+
+    ball.style.left = `${x}px`;
+    ball.style.top = `${y}px`;
+
+    container.appendChild(ball);
+
+    setTimeout(() => {
+      ball.remove();
+    }, 2000);
+  }
+
+  setInterval(createPulseBall, 800);
+</script>
+{% endblock %}

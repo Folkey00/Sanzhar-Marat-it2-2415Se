@@ -1,39 +1,158 @@
 {% extends 'base.html' %}
-{% block title %}{{ project.title }}{% endblock %}
+{% block title %}{{ project.title }} | Проект{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm p-4 mb-4">
-    <h2>{{ project.title }}</h2>
-    <p><strong>Описание:</strong> {{ project.description }}</p>
-    <p><strong>Бюджет:</strong> {{ project.budget }} ₸</p>
-    <p><strong>Дедлайн:</strong> {{ project.deadline }}</p>
+<style>
+    body {
+        background-color: #0d0d0d;
+        color: #e0e0e0;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    h2, h3, h4 {
+        color: #66fcf1;
+    }
+
+    strong {
+        color: #ffffff;
+    }
+
+    .text-muted {
+        color: #aaa !important;
+    }
+
+    .card {
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        color: #e0e0e0;
+        border-radius: 12px;
+    }
+
+    .card-body {
+        background-color: #212121;
+        color: #ddd;
+        border-radius: 0 0 12px 12px;
+    }
+
+    .btn-primary, .btn-success {
+        background-color: #00bcd4;
+        border: none;
+        color: white;
+        font-weight: bold;
+    }
+
+    .btn-primary:hover, .btn-success:hover {
+        background-color: #0097a7;
+    }
+
+    .btn-outline-primary {
+        border-color: #66fcf1;
+        color: #66fcf1;
+        font-weight: bold;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #66fcf1;
+        color: #000;
+    }
+
+    .btn-outline-danger {
+        border-color: #ff4c4c;
+        color: #ff4c4c;
+        font-weight: bold;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #ff4c4c;
+        color: #000;
+    }
+
+    .btn-outline-secondary {
+        border-color: #999;
+        color: #ccc;
+        font-weight: bold;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #ccc;
+        color: #000;
+    }
+
+    a.btn-link {
+        color: #999;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    a.btn-link:hover {
+        color: #fff;
+        text-decoration: underline;
+    }
+
+    input, textarea, select {
+        background-color: #2a2a2a !important;
+        color: #f1f1f1 !important;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 10px;
+    }
+
+    .badge.bg-info {
+        background-color: #17a2b8;
+    }
+
+    .badge.bg-success {
+        background-color: #28a745;
+    }
+
+    .border-start {
+        border-left: 4px solid #66fcf1 !important;
+    }
+
+    hr {
+        border-top: 1px solid #444;
+    }
+
+    form button {
+        font-weight: bold;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="card shadow-lg p-5 mb-4">
+    <h2 class="fw-bold">{{ project.title }}</h2>
+    <p><strong>📄 Описание:</strong> {{ project.description }}</p>
+    <p><strong>💰 Бюджет:</strong> <span style="color:#ffd700;">{{ project.budget }} ₸</span></p>
+    <p><strong>⏳ Дедлайн:</strong> <span style="color:#ff9800;">{{ project.deadline }}</span></p>
 
     {% if project.executor %}
-        <p><strong>Исполнитель:</strong> {{ project.executor.username }}</p>
+        <p><strong>👷 Исполнитель:</strong> <span style="color:#90caf9;">{{ project.executor.username }}</span></p>
     {% endif %}
 
     {% if request.user == project.owner %}
-        <a class="btn btn-outline-primary" href="{% url 'edit_project' project.pk %}">Редактировать</a>
-        <a class="btn btn-outline-danger" href="{% url 'delete_project' project.pk %}">Удалить</a>
+        <div class="mt-3 d-flex gap-2">
+            <a class="btn btn-outline-primary" href="{% url 'edit_project' project.pk %}">✏️ Изменить проект</a>
+            <a class="btn btn-outline-danger" href="{% url 'delete_project' project.pk %}">🗑️ Удалить проект</a>
+        </div>
     {% endif %}
 </div>
 
 {% if offer_form %}
-    <div class="card p-4 mb-4">
-        <h4>Оставить отклик</h4>
+    <div class="card shadow-sm p-4 mb-4 border-start border-4">
+        <h4 class="mb-3">📨 Оставить отклик</h4>
         <form method="post">
             {% csrf_token %}
             {{ offer_form.as_p }}
-            <button type="submit" class="btn btn-primary">Отправить отклик</button>
+            <button type="submit" class="btn btn-success">🚀 Отправить отклик</button>
         </form>
     </div>
 {% endif %}
 
 {% if offers %}
-    <div class="mt-4">
-        <h4>Отклики:</h4>
+    <div class="mt-5">
+        <h4 class="mb-3">📬 Отклики</h4>
         {% for offer in offers %}
-            <div class="card mb-2">
+            <div class="card mb-3 shadow-sm">
                 <div class="card-body">
                     <p>
                         <strong>{{ offer.freelancer.username }}</strong>
@@ -42,15 +161,15 @@
                         {% elif offer.freelancer.is_freelancer %}
                             <span class="badge bg-success">Фрилансер</span>
                         {% endif %}
-                        предложил: <b>{{ offer.proposed_price }} ₸</b>
+                        предложил: <strong style="color:#ffd700;">{{ offer.proposed_price }} ₸</strong>
                     </p>
-                    <p>{{ offer.proposal_text }}</p>
+                    <p class="text-muted">{{ offer.proposal_text }}</p>
                     <small class="text-muted">{{ offer.created_at|date:"d.m.Y H:i" }}</small>
 
                     {% if request.user == project.client and not project.executor %}
                         <form method="post" action="{% url 'accept_offer' offer.pk %}">
                             {% csrf_token %}
-                            <button class="btn btn-sm btn-success mt-2">Принять</button>
+                            <button class="btn btn-sm btn-outline-success mt-2">✅ Принять отклик</button>
                         </form>
                     {% endif %}
                 </div>
@@ -58,42 +177,49 @@
         {% endfor %}
     </div>
 {% else %}
-    <p>Пока нет откликов.</p>
+    <p class="text-muted mt-3">🔕 Пока нет откликов.</p>
 {% endif %}
 
 {% if can_chat %}
-    <a class="btn btn-outline-secondary mt-3" href="{% url 'project_chat' project.pk %}">💬 Перейти в чат</a>
+    <a class="btn btn-outline-secondary mt-4" href="{% url 'project_chat' project.pk %}">💬 Перейти в чат проекта</a>
 {% endif %}
 
-<hr>
+<hr class="my-5">
 
-<h3>Комментарии</h3>
+<h3 class="mb-3">💭 Комментарии</h3>
 {% for comment in comments %}
-    <div class="mb-2">
+    <div class="border-start ps-3 mb-3">
         <strong>{{ comment.author.username }}</strong>
         {% if comment.author.is_client %}
             <span class="badge bg-info">Заказчик</span>
         {% elif comment.author.is_freelancer %}
             <span class="badge bg-success">Фрилансер</span>
         {% endif %}
-        — {{ comment.created_at|date:"d.m.Y H:i" }}<br>
-        {{ comment.text }}
+        <small class="text-muted ms-2">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+        <p class="mt-2">{{ comment.text }}</p>
     </div>
 {% empty %}
-    <p>Комментариев пока нет.</p>
+    <p class="text-muted">Пока нет комментариев.</p>
 {% endfor %}
 
 {% if user.is_authenticated %}
-    <form method="post">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <button type="submit" class="btn btn-primary">Добавить комментарий</button>
-    </form>
+    <div class="mt-4">
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn btn-primary">💬 Добавить комментарий</button>
+        </form>
+    </div>
 {% else %}
-    <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+    <p class="mt-4"><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
 {% endif %}
 
-<a class="btn btn-link mt-3" href="{% url 'project_list' %}">← Назад</a>
-{% endblock %}
+<a class="btn btn-link mt-4" href="{% url 'project_list' %}">← Назад ко всем проектам</a>
+{% if request.user == project.client %}
+    <div class="mt-3 d-flex gap-2">
+        <a class="btn btn-outline-primary" href="{% url 'edit_project' project.pk %}">✏️ Изменить проект</a>
+        <a class="btn btn-outline-danger" href="{% url 'delete_project' project.pk %}">🗑️ Удалить проект</a>
+    </div>
+{% endif %}
 
-<p>DEBUG: can_chat = {{ can_chat }}</p>
+{% endblock %}

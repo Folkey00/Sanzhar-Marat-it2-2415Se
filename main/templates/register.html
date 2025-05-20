@@ -1,28 +1,89 @@
 {% extends 'base.html' %}
-{% block title %}Вход / Регистрация{% endblock %}
+{% load static %}
+
+{% block title %}Вход / Регистрация | FreeLance{% endblock %}
 
 {% block content %}
+<style>
+    body {
+        background-color: #0f0f0f;
+        color: #ffffff;
+    }
+
+    .auth-card {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+    }
+
+    .auth-card input,
+    .auth-card select,
+    .auth-card textarea {
+        background-color: #121212;
+        border: 1px solid #444;
+        color: #eee;
+    }
+
+    .auth-card input:focus {
+        border-color: #00ffd0;
+        box-shadow: 0 0 5px #00ffd0;
+    }
+
+    .btn-primary {
+        background-color: #00ffd0;
+        border: none;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .btn-primary:hover {
+        background-color: #00e0b5;
+    }
+
+    label {
+        font-weight: 600;
+    }
+
+    .form-error {
+        color: #ff4d4f;
+        font-size: 0.9em;
+    }
+</style>
+
 <div class="container mt-5" style="max-width: 500px;">
-    <h2 class="mb-4 text-center">Вход / Регистрация</h2>
+    <div class="auth-card">
+        <h2 class="mb-4 text-center">🚀 Вход / Регистрация</h2>
 
-    {% if form.errors %}
-        <div class="alert alert-danger">
-            Пожалуйста, исправьте ошибки в форме.
-        </div>
-    {% endif %}
-
-    <form method="post" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="mb-3">
-                <label class="form-label">{{ field.label_tag }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <div class="text-danger small">{{ field.errors|striptags }}</div>
-                {% endif %}
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                Пожалуйста, исправьте ошибки в форме.
             </div>
-        {% endfor %}
-        <button type="submit" class="btn btn-primary w-100">Отправить</button>
-    </form>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="form-error">{{ field.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {# Добавим поле телефона — обязательно при регистрации #}
+            {% if request.resolver_match.url_name == 'register' %}
+                <div class="mb-3">
+                    <label class="form-label">Номер телефона <span class="text-danger">*</span></label>
+                    <input type="tel" name="phone" class="form-control" placeholder="+7 777 123 45 67" required>
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary w-100">🚀 Продолжить</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

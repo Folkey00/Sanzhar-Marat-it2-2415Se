@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}Удалить проект{% endblock %}
+{% block title %}Подтверждение удаления{% endblock %}
 
 {% block content %}
-<div class="alert alert-warning">
-    <h4>Удалить проект?</h4>
-    <p>Вы действительно хотите удалить <strong>{{ project.title }}</strong>?</p>
+<div class="alert alert-warning text-center p-4 rounded-4 shadow-sm" style="max-width: 480px; margin: 40px auto; background: #2c2c2c; color: #f8d7da; border-color: #f5c6cb;">
+    <h3 class="mb-3" style="text-shadow: 0 0 8px #ff4d6d;">Удалить проект?</h3>
+    <p>Вы уверены, что хотите удалить проект <strong style="color:#ff4d6d;">{{ project.title }}</strong>?</p>
 
-    <form method="post">
+    <form method="post" class="mt-4 d-flex justify-content-center gap-3">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Да, удалить</button>
-        <a href="{% url 'project_detail' project.pk %}" class="btn btn-secondary">Отмена</a>
+        <button type="submit" class="btn btn-danger px-4" style="box-shadow: 0 0 8px #ff4d6d;">Удалить</button>
+        <a href="{% url 'project_detail' project.pk %}" class="btn btn-secondary px-4">Отмена</a>
     </form>
 </div>
 {% endblock %}

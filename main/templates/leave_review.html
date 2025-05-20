@@ -2,14 +2,95 @@
 {% block title %}Оставить отзыв{% endblock %}
 
 {% block content %}
+<style>
+    body {
+        background-color: #0e0e0e;
+        color: #f2f2f2;
+    }
+
+    h2, p {
+        color: #00e6e6;
+        text-shadow: 0 0 10px #00e6e6;
+    }
+
+    form {
+        background-color: #1a1a1a;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        max-width: 600px;
+        margin-top: 20px;
+        border: 1px solid #333;
+    }
+
+    input, textarea, select {
+        background-color: #2a2a2a;
+        color: #fff;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 15px;
+        transition: box-shadow 0.3s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        box-shadow: 0 0 10px #00ffff, 0 0 5px #00ffff inset;
+        border-color: #00ffff;
+        background-color: #1f1f1f;
+    }
+
+    .btn-success {
+        background-color: #00ff99;
+        border: none;
+        color: #000;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 6px;
+        width: 100%;
+        box-shadow: 0 0 15px #00ff99, 0 0 30px #00ff99 inset;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-success:hover {
+        background-color: #00ffaa;
+        box-shadow: 0 0 20px #00ffaa, 0 0 40px #00ffaa inset;
+    }
+
+    .messages {
+        margin-top: 20px;
+    }
+
+    .alert {
+        padding: 10px 20px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
+
+    .alert-success {
+        background-color: #003300;
+        border: 1px solid #00cc66;
+        color: #66ffcc;
+        box-shadow: 0 0 10px #00ff99;
+    }
+</style>
+
 <h2>Оставить отзыв для {{ reviewed_user.username }}</h2>
 <p>По проекту: {{ project.title }}</p>
+
+<!-- Показываем сообщения -->
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Отправить</button>
-    messages.success(request, "Отзыв успешно оставлен.")
+    <button type="submit" class="btn btn-success">📝 Отправить</button>
 </form>
 {% endblock %}
-

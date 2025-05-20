@@ -1,13 +1,145 @@
 {% extends 'base.html' %}
-{% block title %}Создать проект{% endblock %}
+{% block title %}{% if project %}Редактировать{% else %}Создать{% endif %} проект{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">{% if project %}Редактировать{% else %}Создать{% endif %} проект</h2>
+<style>
+  /* Темный фон с легкой текстурой и анимированными кругами */
+  body {
+    background: #121212;
+    overflow-x: hidden;
+    position: relative;
+    color: #e0e0e0;
+  }
+  .background-circles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.15);
+    animation: floatUp 12s linear infinite;
+    filter: drop-shadow(0 0 6px #00ffffaa);
+  }
+  @keyframes floatUp {
+    0% {
+      transform: translateY(100vh) scale(1);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-20vh) scale(0.5);
+      opacity: 0;
+    }
+  }
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Сохранить</button>
-    <a class="btn btn-secondary" href="{% url 'project_list' %}">Отмена</a>
-</form>
+  /* Размеры и позиции разных кругов */
+  .circle:nth-child(1) { width: 120px; height: 120px; left: 10%; animation-delay: 0s; }
+  .circle:nth-child(2) { width: 80px; height: 80px; left: 50%; animation-delay: 4s; }
+  .circle:nth-child(3) { width: 150px; height: 150px; left: 80%; animation-delay: 7s; }
+  .circle:nth-child(4) { width: 60px; height: 60px; left: 30%; animation-delay: 10s; }
+  .circle:nth-child(5) { width: 90px; height: 90px; left: 65%; animation-delay: 2s; }
+
+  /* Форма и контейнер */
+  .form-container {
+    position: relative;
+    z-index: 10;
+    max-width: 500px;
+    margin: 60px auto 100px;
+    padding: 40px;
+    background: rgba(20, 20, 20, 0.85);
+    border-radius: 15px;
+    box-shadow: 0 0 20px #00ffff55;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  h2 {
+    color: #00ffff;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 8px #00ffffaa;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  /* Стиль полей формы */
+  form input[type="text"],
+  form input[type="number"],
+  form textarea,
+  form select {
+    background: #1e1e1e;
+    border: 1.5px solid #00ffff;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #e0e0e0;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  form input[type="text"]:focus,
+  form input[type="number"]:focus,
+  form textarea:focus,
+  form select:focus {
+    outline: none;
+    border-color: #00ffffcc;
+    box-shadow: 0 0 12px #00ffffbb;
+    background: #272727;
+  }
+  /* Кнопки */
+  .btn-success {
+    background-color: #00cccc;
+    border: none;
+    padding: 0.75rem 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 8px #00cccc99;
+  }
+  .btn-success:hover {
+    background-color: #00e5ff;
+    box-shadow: 0 0 16px #00e5ffcc;
+  }
+  .btn-secondary {
+    background-color: #555;
+    border: none;
+    padding: 0.75rem 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #ddd;
+    box-shadow: 0 0 6px #444;
+    transition: background-color 0.3s ease;
+  }
+  .btn-secondary:hover {
+    background-color: #777;
+  }
+</style>
+
+<div class="form-container">
+  <h2>{% if project %}Редактировать{% else %}Создать{% endif %} проект</h2>
+  <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-success">Сохранить</button>
+      <a class="btn btn-secondary" href="{% url 'project_list' %}">Отмена</a>
+  </form>
+</div>
+
+<!-- Анимированные круги на фоне -->
+<div class="background-circles" aria-hidden="true">
+  <div class="circle"></div>
+  <div class="circle"></div>
+  <div class="circle"></div>
+  <div class="circle"></div>
+  <div class="circle"></div>
+</div>
 {% endblock %}
